@@ -24,7 +24,7 @@ export type PostImageCarouselProps = {
 export function PostImageCarousel(props: PostImageCarouselProps) {
   const {
     title = "게시물 이미지",
-    description = "추천 비율 - 4:3 / 최대 5장, 5MB이하",
+    description = "추천 비율 - 0:0 / 최대 5장, 5MB이하",
     items,
     className,
     titleClassName,
