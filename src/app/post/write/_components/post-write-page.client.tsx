@@ -127,7 +127,6 @@ export default function PostWritePageClient() {
                         <Chip
                           tone="highlight"
                           size="md"
-                          className="gap-2"
                           onClick={() => removeSelectedCategory(option)}
                           rightIcon={<XIcon aria-hidden className="size-[14px] text-text-04" strokeWidth={20} />}
                           aria-label={`${option} 카테고리 제거`}

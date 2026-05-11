@@ -31,9 +31,10 @@ export type ChipProps = ButtonHTMLAttributes<HTMLButtonElement> &
 
 export function Chip(props: ChipProps) {
   const { className, tone, size, leftIcon, rightIcon, children, ...rest } = props;
+  const hasIcon = Boolean(leftIcon || rightIcon);
 
   return (
-    <button type="button" className={cn(chipVariants({ tone, size }), className)} {...rest}>
+    <button type="button" className={cn(chipVariants({ tone, size }), hasIcon && "gap-2", className)} {...rest}>
       {leftIcon ? <span className="shrink-0">{leftIcon}</span> : null}
       {children}
       {rightIcon ? <span className="shrink-0">{rightIcon}</span> : null}
