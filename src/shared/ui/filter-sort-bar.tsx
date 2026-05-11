@@ -123,19 +123,12 @@ export function FilterSortBar(props: FilterSortBarProps) {
           onPointerUp={onCategoryPointerEnd}
           onPointerCancel={onCategoryPointerEnd}
           onPointerLeave={onCategoryPointerEnd}
-          className={cn(
-            "flex gap-2 overflow-x-auto",
-            showCategoryFade ? "pr-10" : "",
-            showCategoryFade ? "cursor-grab active:cursor-grabbing" : "",
-          )}
+          className={cn("flex gap-2 overflow-x-auto", showCategoryFade ? "pr-10" : "")}
           style={{ touchAction: "pan-x" }}
         >
           <li>
             <Chip
-              onClick={(event) => {
-                if (categoryScroll.guardClickWhenDragged(event)) {
-                  return;
-                }
+              onClick={() => {
                 onResetOptions?.();
               }}
               tone={hasSelectedOptions ? "inactive" : "active"}
@@ -151,10 +144,7 @@ export function FilterSortBar(props: FilterSortBarProps) {
             return (
               <li key={option}>
                 <Chip
-                  onClick={(event) => {
-                    if (categoryScroll.guardClickWhenDragged(event)) {
-                      return;
-                    }
+                  onClick={() => {
                     onToggleOption?.(option);
                   }}
                   tone={isActive ? "active" : "inactive"}
