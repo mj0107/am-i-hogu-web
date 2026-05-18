@@ -152,18 +152,18 @@
       Pretendard — weight: b(700) / sb(600) / m(500) / r(400)
       naming: --text-<size>-<weight> (size + weight 번들) */
 
-  /* Heading — 36 / 1.5 / -0.25% */
-  --text-heading-b: 2.25rem;
+  /* Heading — 32 / 1.5 / -0.25% */
+  --text-heading-b: 2rem;
   --text-heading-b--line-height: 1.5;
   --text-heading-b--letter-spacing: -0.0025em;
   --text-heading-b--font-weight: 700;
 
-  --text-heading-sb: 2.25rem;
+  --text-heading-sb: 2rem;
   --text-heading-sb--line-height: 1.5;
   --text-heading-sb--letter-spacing: -0.0025em;
   --text-heading-sb--font-weight: 600;
 
-  --text-heading-m: 2.25rem;
+  --text-heading-m: 2rem;
   --text-heading-m--line-height: 1.5;
   --text-heading-m--letter-spacing: -0.0025em;
   --text-heading-m--font-weight: 500;
@@ -249,6 +249,11 @@
   --text-caption-m--font-weight: 500;
 
   /* Small — 11 / 1.5 / 0 */
+  --text-small-sb: 0.6875rem;
+  --text-small-sb--line-height: 1.5;
+  --text-small-sb--letter-spacing: 0em;
+  --text-small-sb--font-weight: 600;
+
   --text-small-m: 0.6875rem;
   --text-small-m--line-height: 1.5;
   --text-small-m--letter-spacing: 0em;
