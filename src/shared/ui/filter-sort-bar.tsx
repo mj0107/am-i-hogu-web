@@ -25,6 +25,11 @@ type UseCategoryFadeEffectParams = {
   updateCategoryFade: () => void;
 };
 
+type UseSelectedCategoryExpandedEffectParams = {
+  selectedOptionsLength: number;
+  setIsSelectedCategoryExpanded: (value: boolean) => void;
+};
+
 function useCategoryFadeEffect({ updateCategoryFade }: UseCategoryFadeEffectParams) {
   useEffect(() => {
     updateCategoryFade();
@@ -34,6 +39,17 @@ function useCategoryFadeEffect({ updateCategoryFade }: UseCategoryFadeEffectPara
       window.removeEventListener("resize", updateCategoryFade);
     };
   }, [updateCategoryFade]);
+}
+
+function useSelectedCategoryExpandedEffect({
+  selectedOptionsLength,
+  setIsSelectedCategoryExpanded,
+}: UseSelectedCategoryExpandedEffectParams) {
+  useEffect(() => {
+    if (selectedOptionsLength <= 2) {
+      setIsSelectedCategoryExpanded(false);
+    }
+  }, [selectedOptionsLength, setIsSelectedCategoryExpanded]);
 }
 
 export function FilterSortBar(props: FilterSortBarProps) {
@@ -51,7 +67,8 @@ export function FilterSortBar(props: FilterSortBarProps) {
   } = props;
 
   const hasSelectedOptions = selectedOptions.length > 0;
-  const visibleSelectedOptions = selectedOptions.slice(0, 2);
+  const [isSelectedCategoryExpanded, setIsSelectedCategoryExpanded] = useState(false);
+  const visibleSelectedOptions = isSelectedCategoryExpanded ? selectedOptions : selectedOptions.slice(0, 2);
   const hiddenSelectedCount = Math.max(0, selectedOptions.length - visibleSelectedOptions.length);
   const categoryScrollRef = useRef<HTMLUListElement>(null);
   const selectedScrollRef = useRef<HTMLUListElement>(null);
@@ -71,6 +88,10 @@ export function FilterSortBar(props: FilterSortBarProps) {
   }, []);
 
   useCategoryFadeEffect({ updateCategoryFade });
+  useSelectedCategoryExpandedEffect({
+    selectedOptionsLength: selectedOptions.length,
+    setIsSelectedCategoryExpanded,
+  });
 
   const onCategoryPointerDown = (event: PointerEvent<HTMLUListElement>) => {
     categoryScroll.handlePointerDown(event, categoryScrollRef.current);
@@ -126,7 +147,10 @@ export function FilterSortBar(props: FilterSortBarProps) {
             return (
               <li key={option}>
                 <Chip
-                  onClick={() => {
+                  onClick={(event) => {
+                    if (categoryScroll.guardClickWhenDragged(event)) {
+                      return;
+                    }
                     onToggleOption?.(option);
                   }}
                   tone={isActive ? "active" : "inactive"}
@@ -179,9 +203,9 @@ export function FilterSortBar(props: FilterSortBarProps) {
                   if (selectedScroll.guardClickWhenDragged(event)) {
                     return;
                   }
-                  onResetOptions?.();
+                  setIsSelectedCategoryExpanded(true);
                 }}
-                tone={hasSelectedOptions ? "inactive" : "active"}
+                tone="inactive"
                 className="shrink-0"
                 aria-label={`숨겨진 카테고리 ${hiddenSelectedCount}개 보기`}
               >
