@@ -1,5 +1,8 @@
 #!/bin/sh
-cd ../
+set -eu
+
+rm -rf output
 mkdir output
-cp -R ./web/* ./output
-cp -R ./output ./web/
+
+git archive HEAD | tar -x -C output
+rm -rf output/.github

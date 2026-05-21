@@ -1,30 +1,37 @@
-name: deploy
+name: mirror to public repository
 
 on:
   push:
     branches: [main]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: mirror-to-public-repository
+  cancel-in-progress: true
+
 jobs:
-  build:
+  mirror:
     runs-on: ubuntu-latest
-    container: pandoc/latex
     steps:
-      - uses: actions/checkout@v2
-      - name: Install mustache (to update the date)
-        run: apk add ruby && gem install mustache
-      - name: creates output
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create mirror payload
         run: sh ./build.sh
-      - name: Pushes to another repository
+
+      - name: Push to public repository
         id: push_directory
         uses: cpina/github-action-push-to-another-repository@main
         env:
           API_TOKEN_GITHUB: ${{ secrets.REPOSITORY_ACCESS_TOKEN }}
         with:
-          source-directory: "output"
-          destination-github-username: "mj0107"
-          destination-repository-name: "am-i-hogu-web"
+          source-directory: output
+          destination-github-username: mj0107
+          destination-repository-name: am-i-hogu-web
           user-email: ${{ secrets.EMAIL }}
-          commit-message: ${{ github.event.commits[0].message }}
+          user-name: ${{ github.actor }}
+          commit-message: ${{ github.event.head_commit.message }}
           target-branch: main
-      - name: Test get variable exported by push-to-another-repository
-        run: echo $DESTINATION_CLONED_DIRECTORY
+          create-target-branch-if-needed: true
