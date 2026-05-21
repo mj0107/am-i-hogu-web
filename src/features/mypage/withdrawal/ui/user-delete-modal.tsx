@@ -1,15 +1,10 @@
 "use client";
 
 import { type ReactNode, useEffect, useState } from "react";
-
-import { UserDeleteCompleteModal } from "@/features/mypage/ui/user-delete-complete-modal";
-import { UserDeleteConfirmModal } from "@/features/mypage/ui/user-delete-confirm-modal";
-import { UserDeleteFailedModal } from "@/features/mypage/ui/user-delete-failed-modal";
-import {
-  type UserDeleteReason,
-  UserDeleteReasonModal,
-  type UserDeleteSubmitPayload,
-} from "@/features/mypage/ui/user-delete-reason-modal";
+import { UserDeleteCompleteModal } from "./user-delete-complete-modal";
+import { UserDeleteConfirmModal } from "./user-delete-confirm-modal";
+import { UserDeleteFailedModal } from "./user-delete-failed-modal";
+import { type UserDeleteReason, UserDeleteReasonModal, type UserDeleteSubmitPayload } from "./user-delete-reason-modal";
 
 export type UserDeleteFlowStep = "confirm" | "reason" | "complete" | "failed";
 

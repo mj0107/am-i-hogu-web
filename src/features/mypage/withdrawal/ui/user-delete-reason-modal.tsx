@@ -2,7 +2,7 @@
 
 import { type ReactNode, useEffect, useState } from "react";
 
-import { USER_DELETE_MODAL_COPY, USER_DELETE_REASONS } from "@/features/mypage/constants/user-delete-modal.constants";
+import { USER_DELETE_MODAL_COPY, USER_DELETE_REASONS } from "@/features/mypage/withdrawal/constants";
 import {
   Input,
   Modal,

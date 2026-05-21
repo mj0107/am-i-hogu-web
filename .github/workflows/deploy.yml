@@ -1,0 +1,37 @@
+name: mirror to public repository
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mirror-to-public-repository
+  cancel-in-progress: true
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create mirror payload
+        run: sh ./build.sh
+
+      - name: Push to public repository
+        id: push_directory
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.REPOSITORY_ACCESS_TOKEN }}
+        with:
+          source-directory: output
+          destination-github-username: mj0107
+          destination-repository-name: am-i-hogu-web
+          user-email: ${{ secrets.EMAIL }}
+          user-name: ${{ github.actor }}
+          commit-message: ${{ github.event.head_commit.message }}
+          target-branch: main
+          create-target-branch-if-needed: true

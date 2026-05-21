@@ -1,11 +1,9 @@
-import type { PostCategoryLabel, PostCategoryValue } from "@/features/post/constants";
-import type { POST_FILTER_OPTIONS } from "@/features/post/constants/post-filter.constants";
+import type { PostCategoryLabel } from "@/features/post/constants";
 import type { SubHeadingWidgetProps } from "@/widgets/sub-heading/ui/sub-heading.widget";
 
 export type SortValue = NonNullable<SubHeadingWidgetProps["sortValue"]>;
-export type CategoryLabel = (typeof POST_FILTER_OPTIONS)[number];
-export type CategoryParam = PostCategoryValue;
-export type CategoryDisplayLabel = PostCategoryLabel;
+export type CategoryLabel = PostCategoryLabel;
+export type CategoryParam = "TRADE" | "WORK" | "SPEND" | "RELATIONSHIP" | "CONTRACT" | "ETC";
 
 export type SearchPostItem = {
   postId: number;

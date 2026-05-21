@@ -6,7 +6,7 @@ import {
   UserDeleteFailedModal,
   UserDeleteModal,
   UserDeleteReasonModal,
-} from "@/features/mypage/ui";
+} from "@/features/mypage/withdrawal/ui";
 
 const baseArgs = {
   open: true,

@@ -238,6 +238,11 @@
   --text-body-r--font-weight: 400;
 
   /* Caption — 13 / 1.5 / 0 */
+  --text-caption-b: 0.8125rem;
+  --text-caption-b--line-height: 1.5;
+  --text-caption-b--letter-spacing: 0em;
+  --text-caption-b--font-weight: 700;
+
   --text-caption-sb: 0.8125rem;
   --text-caption-sb--line-height: 1.5;
   --text-caption-sb--letter-spacing: 0em;
