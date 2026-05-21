@@ -10,6 +10,7 @@ export * from "./content-card-carousel";
 export * from "./empty-state";
 export * from "./filter-sort-bar";
 export * from "./input";
+export * from "./loading-state";
 export * from "./modal";
 export * from "./post-image-carousel";
 export * from "./post-image-tile";

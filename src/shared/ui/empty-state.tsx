@@ -7,6 +7,7 @@ export type EmptyStateProps = {
   icon?: ReactNode;
   title: ReactNode;
   description?: ReactNode;
+  action?: ReactNode;
   titleClassName?: string;
   descriptionClassName?: string;
   contentClassName?: string;
@@ -19,6 +20,7 @@ export function EmptyState(props: EmptyStateProps) {
     icon,
     title,
     description,
+    action,
     titleClassName,
     descriptionClassName,
     contentClassName,
@@ -37,6 +39,7 @@ export function EmptyState(props: EmptyStateProps) {
         {description ? (
           <p className={cn("whitespace-pre-line text-caption-m text-text-02", descriptionClassName)}>{description}</p>
         ) : null}
+        {action ? <div className="mt-2 w-full">{action}</div> : null}
       </div>
     </figure>
   );

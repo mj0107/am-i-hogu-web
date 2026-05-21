@@ -73,3 +73,54 @@
 [data-slot="checkbox-indicator"][data-state="unchecked"] {
   opacity: 0;
 }
+
+/* ===== Loading Animation ===== */
+/* 저울대(beam) + 양쪽 접시(pans)만 회전, 기둥(post)·받침(base)은 고정. */
+
+@keyframes scales-beam-tilt {
+  0%,
+  10% {
+    transform: rotate(-8deg);
+  }
+  50%,
+  60% {
+    transform: rotate(8deg);
+  }
+  100% {
+    transform: rotate(-8deg);
+  }
+}
+
+@keyframes scales-base-sway {
+  0%,
+  10% {
+    transform: rotate(-3deg);
+  }
+  50%,
+  60% {
+    transform: rotate(3deg);
+  }
+  100% {
+    transform: rotate(-3deg);
+  }
+}
+
+.animate-scales-beam {
+  animation: scales-beam-tilt 1.6s ease-in-out infinite;
+  transform-box: view-box;
+  transform-origin: 128px 72px;
+}
+
+.animate-scales-base {
+  animation: scales-base-sway 1.6s ease-in-out infinite;
+  animation-delay: 0.1s;
+  transform-box: view-box;
+  transform-origin: 128px 216px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-scales-beam,
+  .animate-scales-base {
+    animation: none;
+  }
+}
