@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import SectionPlusIcon from "@/assets/icons/selection-plus.svg";
-import { POST_CATEGORY_VALUE_BY_LABEL, type PostCategoryLabel, toPostCategoryLabel } from "@/features/post/constants";
-import { HOME_POSTS_MOCK } from "@/features/post/model/post.mock";
+import { POST_CATEGORY_VALUE_BY_LABEL, type PostCategoryLabel } from "@/features/post/constants";
+import { getPrimaryPostCategoryLabel, getPrimaryPostCategoryValue, HOME_POSTS_MOCK } from "@/features/post/model";
 import { ContentCard, ContentCardBody, ContentCardFooter, ContentCardHeader, EmptyState } from "@/shared/ui";
 import { formatRelativeTime } from "@/shared/utils/format";
 import { FooterWidget } from "@/widgets/footer/ui";
@@ -25,7 +25,7 @@ export default function HomePageClient() {
 
     const filtered =
       selectedCategories.length > 0
-        ? HOME_POSTS_MOCK.filter((post) => selectedCategoryValues.includes(post.category))
+        ? HOME_POSTS_MOCK.filter((post) => selectedCategoryValues.includes(getPrimaryPostCategoryValue(post)))
         : HOME_POSTS_MOCK;
 
     const sorted = [...filtered];
@@ -34,10 +34,10 @@ export default function HomePageClient() {
         return b.viewCount - a.viewCount;
       }
       if (sortValue === "comments") {
-        return b.comments - a.comments;
+        return b.commentCount - a.commentCount;
       }
       if (sortValue === "votes") {
-        return b.votes - a.votes;
+        return b.totalVoteCount - a.totalVoteCount;
       }
 
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
@@ -73,25 +73,26 @@ export default function HomePageClient() {
             </h2>
             <ul className="space-y-9">
               {posts.map((post) => (
-                <li key={post.id}>
-                  <Link href={`/post/${post.id}`} className="block">
+                <li key={post.postId}>
+                  <Link href={`/post/${post.postId}`} className="block">
                     <ContentCard>
                       <ContentCardHeader
-                        authorName={post.author}
-                        category={toPostCategoryLabel(post.category)}
+                        authorName={post.writer.nickname}
+                        authorImage={post.writer.profileImageUrl || undefined}
+                        category={getPrimaryPostCategoryLabel(post)}
                         meta={formatRelativeTime(post.createdAt)}
                         viewCount={post.viewCount}
                         isBookmarked={post.isBookmarked}
                       />
                       <ContentCardBody
                         title={post.title}
-                        description={post.description}
+                        description={post.contentPreview}
                         image={
-                          <div className={`aspect-[5/3] w-full rounded-[8px] bg-gradient-to-br ${post.images[0]}`} />
+                          <div className={`aspect-[5/3] w-full rounded-[8px] bg-gradient-to-br ${post.thumbnailUrl}`} />
                         }
                         imageContainerClassName="rounded-[8px] bg-bg-02"
                       />
-                      <ContentCardFooter votes={post.votes} comments={post.comments} />
+                      <ContentCardFooter votes={post.totalVoteCount} comments={post.commentCount} />
                     </ContentCard>
                   </Link>
                 </li>

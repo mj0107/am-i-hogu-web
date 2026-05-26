@@ -1,23 +1,8 @@
-import { POST_CATEGORIES, POST_CATEGORY_LABEL_BY_VALUE } from "@/features/post/constants";
-import { HOME_POSTS_MOCK } from "@/features/post/model/post.mock";
+import { POST_CATEGORY_LABEL_BY_VALUE, POST_CATEGORY_VALUES } from "@/features/post/constants";
+import { HOME_POSTS_MOCK, isPostCategoryValue } from "@/features/post/model";
 import type { CategoryParam, SearchPostItem, SearchPostsResponse, SortValue } from "./search.types";
 
-export const SEARCH_POSTS_MOCK: SearchPostItem[] = HOME_POSTS_MOCK.map((post) => ({
-  postId: post.id,
-  isBookmarked: post.isBookmarked,
-  categories: post.category,
-  title: post.title,
-  createdAt: post.createdAt,
-  viewCount: post.viewCount,
-  contentPreview: post.description,
-  thumbnailUrl: post.images[0] ?? "from-slate-100 via-zinc-100 to-neutral-200",
-  totalVoteCount: post.votes,
-  commentCount: post.comments,
-  writer: {
-    nickname: post.author,
-    profileImageUrl: "",
-  },
-}));
+export const SEARCH_POSTS_MOCK: SearchPostItem[] = HOME_POSTS_MOCK;
 
 export function parseSortValue(value: string | null): SortValue {
   if (value === "views" || value === "comments" || value === "votes") {
@@ -50,9 +35,7 @@ export function parseCategoryParams(value: string | null): CategoryParam[] {
     .split(",")
     .map((item) => item.trim())
     .filter(Boolean);
-  return raw.filter((item): item is CategoryParam =>
-    (POST_CATEGORIES as readonly { value: string }[]).some((category) => category.value === item),
-  );
+  return raw.filter((item): item is CategoryParam => POST_CATEGORY_VALUES.includes(item as CategoryParam));
 }
 
 export const PARAM_TO_CATEGORY_LABEL = POST_CATEGORY_LABEL_BY_VALUE;
@@ -73,7 +56,9 @@ export function mockSearchPosts(params: {
       post.title.toLowerCase().includes(normalizedKeyword) ||
       post.contentPreview.toLowerCase().includes(normalizedKeyword) ||
       post.writer.nickname.toLowerCase().includes(normalizedKeyword);
-    const matchesCategory = categories.length === 0 || categories.includes(post.categories);
+    const matchesCategory =
+      categories.length === 0 ||
+      post.categories.some((category) => isPostCategoryValue(category) && categories.includes(category));
     return matchesKeyword && matchesCategory;
   });
 
@@ -91,6 +76,6 @@ export function mockSearchPosts(params: {
     totalPostCount: sorted.length,
     posts: pagePosts,
     hasNext: nextCursorValue < sorted.length,
-    nextCursor: nextCursorValue < sorted.length ? String(nextCursorValue) : null,
+    nextCursor: nextCursorValue < sorted.length ? String(nextCursorValue) : "",
   };
 }

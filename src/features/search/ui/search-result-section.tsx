@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { PARAM_TO_CATEGORY_LABEL } from "@/features/search/model/search.mock";
+import { getPrimaryPostCategoryLabel } from "@/features/post/model";
 import type { CategoryLabel, SearchPostsResponse, SortValue } from "@/features/search/model/search.types";
 import { ContentCard, ContentCardBody, ContentCardFooter, ContentCardHeader } from "@/shared/ui";
 import { formatRelativeTime } from "@/shared/utils/format";
@@ -25,7 +25,7 @@ export function SearchResultSection(props: SearchResultSectionProps) {
         <SubHeadingWidget
           selectedOptions={selectedCategories}
           sortValue={sortValue}
-          totalCount={response.totalPostCount}
+          totalCount={response.totalPostCount ?? response.posts.length}
           onSelectedOptionsChange={onCategoryChange}
           onSortValueChange={onSortChange}
         />
@@ -41,7 +41,7 @@ export function SearchResultSection(props: SearchResultSectionProps) {
                     <ContentCardHeader
                       authorName={post.writer.nickname}
                       authorImage={post.writer.profileImageUrl || undefined}
-                      category={PARAM_TO_CATEGORY_LABEL[post.categories]}
+                      category={getPrimaryPostCategoryLabel(post)}
                       meta={formatRelativeTime(post.createdAt)}
                       viewCount={post.viewCount}
                       isBookmarked={post.isBookmarked}
