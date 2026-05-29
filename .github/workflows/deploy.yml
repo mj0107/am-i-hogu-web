@@ -33,6 +33,6 @@ jobs:
           destination-repository-name: am-i-hogu-web
           user-email: ${{ secrets.EMAIL }}
           user-name: ${{ github.actor }}
-          commit-message: ${{ github.event.head_commit.message || 'deploy: 수동 배포 실행' }}
+          commit-message: "${{ github.event.head_commit.message || 'deploy: 수동 배포 실행' }}"
           target-branch: main
           create-target-branch-if-needed: true
