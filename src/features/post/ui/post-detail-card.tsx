@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import BookmarkIcon from "@/assets/icons/bookmark-simple.svg";
@@ -29,6 +30,7 @@ export type PostDetailHeaderProps = {
   meta: string;
   viewCount: number;
   isBookmarked?: boolean;
+  isMine?: boolean;
   className?: string;
 };
 
@@ -38,7 +40,7 @@ function IconButton(props: ComponentProps<"button">) {
 }
 
 export function PostDetailHeader(props: PostDetailHeaderProps) {
-  const { postId, category, meta, viewCount, isBookmarked = false, className } = props;
+  const { postId, category, meta, viewCount, isBookmarked = false, isMine = false, className } = props;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -95,36 +97,39 @@ export function PostDetailHeader(props: PostDetailHeaderProps) {
           <IconButton aria-label="공유" onClick={handleShare}>
             <ShareIcon aria-hidden className={iconClassName} strokeWidth={20} />
           </IconButton>
-          <div ref={menuRef} className="relative inline-flex size-6 items-center justify-center">
-            <IconButton
-              aria-label="게시글 더보기"
-              aria-expanded={isMenuOpen}
-              className="focus:outline-none focus-visible:outline-none focus-visible:ring-0"
-              onClick={() => setIsMenuOpen((prev) => !prev)}
-            >
-              <VerticalDotIcon aria-hidden className={iconClassName} strokeWidth={20} />
-            </IconButton>
-            {isMenuOpen ? (
-              <div className="absolute right-0 top-10 z-20 min-w-[110px] rounded-[16px] bg-bg-01 px-4 py-3 shadow-[0_8px_20px_rgba(0,0,0,0.12)]">
-                <button
-                  type="button"
-                  className="block w-full py-1 text-left text-body-m text-text-03 focus:outline-none focus-visible:outline-none focus-visible:ring-0"
-                >
-                  수정하기
-                </button>
-                <button
-                  type="button"
-                  className="mt-1 block w-full py-1 text-left text-body-m text-danger focus:outline-none focus-visible:outline-none focus-visible:ring-0"
-                  onClick={() => {
-                    setIsMenuOpen(false);
-                    setIsDeleteModalOpen(true);
-                  }}
-                >
-                  삭제하기
-                </button>
-              </div>
-            ) : null}
-          </div>
+          {isMine ? (
+            <div ref={menuRef} className="relative inline-flex size-6 items-center justify-center">
+              <IconButton
+                aria-label="게시글 더보기"
+                aria-expanded={isMenuOpen}
+                className="focus:outline-none focus-visible:outline-none focus-visible:ring-0"
+                onClick={() => setIsMenuOpen((prev) => !prev)}
+              >
+                <VerticalDotIcon aria-hidden className={iconClassName} strokeWidth={20} />
+              </IconButton>
+              {isMenuOpen ? (
+                <div className="absolute right-0 top-10 z-20 min-w-[110px] rounded-[16px] bg-bg-01 px-4 py-3 shadow-[0_8px_20px_rgba(0,0,0,0.12)]">
+                  <Link
+                    href={`/post/${postId}/edit`}
+                    className="block w-full py-1 text-left text-body-m text-text-03 focus:outline-none focus-visible:outline-none focus-visible:ring-0"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    수정하기
+                  </Link>
+                  <button
+                    type="button"
+                    className="mt-1 block w-full py-1 text-left text-body-m text-danger focus:outline-none focus-visible:outline-none focus-visible:ring-0"
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      setIsDeleteModalOpen(true);
+                    }}
+                  >
+                    삭제하기
+                  </button>
+                </div>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       </header>
       {isShareToastVisible ? (

@@ -1,12 +1,7 @@
 "use client";
 
-import { toPostCategoryLabel } from "@/features/post/constants";
-import { HOME_POSTS_MOCK } from "@/features/post/model/post.mock";
-import {
-  createDetailVoteOptions,
-  DETAIL_COMMENTS_MOCK,
-  DETAIL_VOTE_MOCK,
-} from "@/features/post/model/post-detail.mock";
+import { getPrimaryPostCategoryLabel, POST_DETAIL_RESPONSE_MOCKS } from "@/features/post/model";
+import { createDetailVoteOptions, DETAIL_COMMENTS_MOCK } from "@/features/post/model/post-detail.mock";
 import {
   PostCommentsSection,
   PostDetailCard,
@@ -23,15 +18,18 @@ type PostDetailPageClientProps = {
 };
 
 export default function PostDetailPageClient({ postId }: PostDetailPageClientProps) {
-  const selectedPost = HOME_POSTS_MOCK.find((post) => post.id === postId);
+  const selectedPost = POST_DETAIL_RESPONSE_MOCKS.find((post) => post.postId === postId);
   if (!selectedPost) {
     throw new Error(`Post not found for postId=${postId}`);
   }
 
-  const content = `${selectedPost.description}`;
   const voteOptions = createDetailVoteOptions();
+  const initialSelectedVoteId =
+    selectedPost.vote.myVote === "HOGU" || selectedPost.vote.myVote === "NOT_HOGU"
+      ? selectedPost.vote.myVote
+      : undefined;
   const imageCarouselItems = selectedPost.images.map((gradientClassName, index) => ({
-    id: `${selectedPost.id}-image-${index + 1}`,
+    id: `${selectedPost.postId}-image-${index + 1}`,
     content: <div className={`h-[196px] w-full rounded-[8px] bg-gradient-to-br ${gradientClassName}`} />,
   }));
 
@@ -41,16 +39,17 @@ export default function PostDetailPageClient({ postId }: PostDetailPageClientPro
       <main className="flex-1 px-common-padding py-6">
         <PostDetailCard>
           <PostDetailHeader
-            postId={selectedPost.id}
-            category={toPostCategoryLabel(selectedPost.category)}
+            postId={selectedPost.postId}
+            category={getPrimaryPostCategoryLabel(selectedPost)}
             meta={formatRelativeTime(selectedPost.createdAt)}
             viewCount={selectedPost.viewCount}
-            isBookmarked={selectedPost.isBookmarked}
+            isBookmarked={false}
+            isMine={selectedPost.isMine}
           />
           <PostDetailContent
             title={selectedPost.title}
-            authorName={selectedPost.author}
-            content={content}
+            authorName={selectedPost.writer.nickname}
+            content={selectedPost.content}
             media={
               <ContentCardCarousel
                 items={imageCarouselItems}
@@ -63,9 +62,9 @@ export default function PostDetailPageClient({ postId }: PostDetailPageClientPro
           />
           <PostVoteSection
             options={voteOptions}
-            totalVotes={selectedPost.votes}
-            initialSelectedId={DETAIL_VOTE_MOCK.myVote}
-            aria-label={`판결 참여 ${formatNumber(selectedPost.votes)}명`}
+            totalVotes={selectedPost.vote.totalVotes}
+            initialSelectedId={initialSelectedVoteId}
+            aria-label={`판결 참여 ${formatNumber(selectedPost.vote.totalVotes)}명`}
           />
         </PostDetailCard>
 

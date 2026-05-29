@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { HOME_POSTS_MOCK } from "@/features/post/model/post.mock";
+import { POST_DETAIL_RESPONSE_MOCKS } from "@/features/post/model";
 import PostDetailPageClient from "./_components/post-detail.client";
 
 function resolvePost(postId: string) {
@@ -9,7 +9,7 @@ function resolvePost(postId: string) {
     return null;
   }
 
-  return HOME_POSTS_MOCK.find((item) => item.id === numericPostId) ?? null;
+  return POST_DETAIL_RESPONSE_MOCKS.find((item) => item.postId === numericPostId) ?? null;
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ postId: string }> }): Promise<Metadata> {
@@ -24,10 +24,10 @@ export async function generateMetadata({ params }: { params: Promise<{ postId: s
   //  링크 미리보기(언펄)에서 의도한대로 제목/설명 제대로 노출되는지 크로스체크할 것
   return {
     title: post.title,
-    description: post.description,
+    description: post.content,
     openGraph: {
       title: post.title,
-      description: post.description,
+      description: post.content,
       type: "article",
     },
   };
@@ -40,5 +40,5 @@ export default async function PostDetailPage({ params }: { params: Promise<{ pos
     notFound();
   }
 
-  return <PostDetailPageClient postId={post.id} />;
+  return <PostDetailPageClient postId={post.postId} />;
 }

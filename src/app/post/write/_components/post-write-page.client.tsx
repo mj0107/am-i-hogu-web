@@ -1,78 +1,52 @@
 "use client";
 
-import { type ChangeEvent, useMemo, useState } from "react";
 import CaretRightIcon from "@/assets/icons/caret-right.svg";
 import IdeaIcon from "@/assets/icons/idea.svg";
 import XIcon from "@/assets/icons/x.svg";
-import type { POST_FILTER_OPTIONS } from "@/features/post/constants/post-filter.constants";
-import { postWriteSchema } from "@/features/post/model/post-write.schema";
-import { PostFilterBottomSheet } from "@/features/post/ui/post-filter-bottom-sheet";
+import { POST_WRITE_IMAGE_SLOT_ITEMS, POST_WRITE_TITLE_LIMIT } from "@/features/post/constants";
+import { usePostWriteForm } from "@/features/post/hooks";
+import type { PostFormInitialValues } from "@/features/post/model";
+import { PostFilterBottomSheet } from "@/features/post/ui";
 import { Button, Chip, PostImageCarousel, Textarea, Textfield } from "@/shared/ui";
 import { HeaderWidget } from "@/widgets/header/ui";
 
-const TITLE_LIMIT = 50;
-const IMAGE_SLOT_COUNT = 4;
-const IMAGE_SLOT_IDS = Array.from({ length: IMAGE_SLOT_COUNT }, (_, order) => `post-image-slot-${order + 1}`);
-const IMAGE_SLOT_ITEMS = IMAGE_SLOT_IDS.map((slotId, index) => ({
-  id: slotId,
-  "aria-label": `이미지 추가 ${index + 1}`,
-}));
-type CategoryOption = (typeof POST_FILTER_OPTIONS)[number];
+type PostWritePageClientProps = {
+  mode?: "create" | "edit";
+  headerTitle?: string;
+  submitLabel?: string;
+  submitAriaLabel?: string;
+  initialValues?: PostFormInitialValues;
+};
 
-// TODO : 추후 컴포넌트 리팩토링 필요 (아직 못함 ^-^)
-export default function PostWritePageClient() {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [selectedCategories, setSelectedCategories] = useState<CategoryOption[]>([]);
-  const [draftCategories, setDraftCategories] = useState<CategoryOption[]>([]);
-  const [isCategorySheetOpen, setIsCategorySheetOpen] = useState(false);
-
-  const titleLength = title.length;
-  const isTitleTooLong = titleLength > TITLE_LIMIT;
-  const titleHelperText = isTitleTooLong ? "제목은 공백 포함 50자 이내로 작성해주세요." : undefined;
-
-  const isFormValid = useMemo(() => {
-    const parsed = postWriteSchema.safeParse({ title, content });
-    return parsed.success && selectedCategories.length > 0;
-  }, [content, selectedCategories.length, title]);
-
-  const openCategorySheet = () => {
-    setDraftCategories(selectedCategories);
-    setIsCategorySheetOpen(true);
-  };
-
-  const closeCategorySheet = () => {
-    setDraftCategories(selectedCategories);
-    setIsCategorySheetOpen(false);
-  };
-
-  const toggleDraftCategory = (option: CategoryOption) => {
-    setDraftCategories((prev) => (prev.includes(option) ? [] : [option]));
-  };
-
-  const saveCategories = () => {
-    setSelectedCategories(draftCategories);
-    setIsCategorySheetOpen(false);
-  };
-
-  const removeSelectedCategory = (option: CategoryOption) => {
-    setSelectedCategories((prev) => prev.filter((category) => category !== option));
-    setDraftCategories((prev) => prev.filter((category) => category !== option));
-  };
-
-  const resizeContentTextarea = (element: HTMLTextAreaElement) => {
-    element.style.height = "auto";
-    element.style.height = `${element.scrollHeight}px`;
-  };
-
-  const handleContentChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    setContent(event.target.value);
-    resizeContentTextarea(event.target);
-  };
+export default function PostWritePageClient(props: PostWritePageClientProps) {
+  const { mode = "create", initialValues } = props;
+  const headerTitle = props.headerTitle ?? (mode === "edit" ? "게시글 수정" : "게시글 작성");
+  const submitLabel = props.submitLabel ?? (mode === "edit" ? "수정하기" : "등록하기");
+  const submitAriaLabel = props.submitAriaLabel ?? (mode === "edit" ? "게시글 수정" : "게시글 등록");
+  const {
+    title,
+    content,
+    selectedCategories,
+    draftCategories,
+    isCategorySheetOpen,
+    contentTextareaRef,
+    titleLength,
+    titleHelperText,
+    isTitleTooLong,
+    isFormValid,
+    openCategorySheet,
+    closeCategorySheet,
+    toggleDraftCategory,
+    saveCategories,
+    removeSelectedCategory,
+    handleTitleChange,
+    handleContentChange,
+  } = usePostWriteForm({ initialValues });
 
   const handleSubmit = () => {
     // TODO: API 연동 전까지 UI-only로 유지
-    // POST /api/posts
+    // create: POST /api/posts
+    // edit: PATCH /api/posts/{postId}
     // Authorization: Bearer {accessToken}
     // {
     //   "title": "제목입니다",
@@ -89,19 +63,21 @@ export default function PostWritePageClient() {
 
   return (
     <div className="relative flex min-h-full flex-col bg-bg-01">
-      <HeaderWidget title="게시글 작성" />
+      <HeaderWidget title={headerTitle} />
 
       <main className="relative flex-1 overflow-y-auto px-4 pb-28 pt-4">
         <div className="flex flex-col gap-10">
           <section className="rounded-[16px] border border-line-02 px-4 py-5">
             <div className="flex flex-col gap-8">
               <Textfield
+                id="post-title"
+                name="title"
                 title="제목"
                 required
                 value={title}
-                onChange={(event) => setTitle(event.target.value)}
+                onChange={handleTitleChange}
                 placeholder="제목을 입력하세요."
-                countText={`${titleLength}/${TITLE_LIMIT}`}
+                countText={`${titleLength}/${POST_WRITE_TITLE_LIMIT}`}
                 helperText={titleHelperText}
                 tone={isTitleTooLong ? "danger" : "default"}
               />
@@ -152,6 +128,8 @@ export default function PostWritePageClient() {
                 </header>
                 <Textarea
                   id="post-content"
+                  name="content"
+                  ref={contentTextareaRef}
                   variant="filled"
                   value={content}
                   onChange={handleContentChange}
@@ -160,7 +138,8 @@ export default function PostWritePageClient() {
                 />
               </section>
 
-              <PostImageCarousel items={IMAGE_SLOT_ITEMS} />
+              {/* TODO : API 연동 나중에 해주기...  edit mode의 경우, initialValues로 연결 */}
+              <PostImageCarousel items={POST_WRITE_IMAGE_SLOT_ITEMS} />
             </div>
           </section>
 
@@ -186,10 +165,10 @@ export default function PostWritePageClient() {
           fullWidth
           variant={isFormValid ? "primary" : "disabled"}
           disabled={!isFormValid}
-          aria-label="게시글 등록"
+          aria-label={submitAriaLabel}
           onClick={handleSubmit}
         >
-          등록하기
+          {submitLabel}
         </Button>
       </div>
 
