@@ -3,15 +3,17 @@
 // 이 파일의 `ApiError`는 400/401/404/500, timeout 같은 API 응답 실패를
 // TanStack Query나 server action에서 다루기 위한 데이터 계층 에러입니다.
 
+import type { ErrorResponse } from "@/shared/api/generated";
+
 export type ApiErrorPayload = {
   status?: number;
   message: string;
-  data?: unknown;
+  data?: ErrorResponse;
 };
 
 export class ApiError extends Error {
   status?: number;
-  data?: unknown;
+  data?: ErrorResponse;
 
   constructor(payload: ApiErrorPayload) {
     super(payload.message);

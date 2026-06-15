@@ -1,16 +1,22 @@
 import { ApiError } from "./error";
+import type { ErrorResponse } from "./generated";
 
 const DEFAULT_API_TIMEOUT_MS = 15_000;
 
-type JsonRecord = Record<string, unknown>;
+type JsonObject = object;
 
 export type ApiClientOptions = Omit<RequestInit, "body"> & {
-  body?: BodyInit | JsonRecord | unknown[] | null;
+  body?: BodyInit | JsonObject | unknown[] | null;
   query?: Record<string, string | number | boolean | null | undefined>;
   timeoutMs?: number;
 };
 
 function getApiBaseUrl() {
+  if (typeof window !== "undefined") {
+    // 클라이언트(브라우저)에서는 NEXT_PUBLIC_ 접두사가 붙은 환경 변수만 사용할 수 있다.
+    return process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
+  }
+
   return process.env.API_BASE_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
 }
 
@@ -28,7 +34,7 @@ function createApiUrl(path: string, query?: ApiClientOptions["query"]) {
   return baseUrl ? url.toString() : `${url.pathname}${url.search}`;
 }
 
-function isJsonBody(body: ApiClientOptions["body"]): body is JsonRecord | unknown[] {
+function isJsonBody(body: ApiClientOptions["body"]): body is JsonObject | unknown[] {
   return Boolean(body) && typeof body === "object" && !(body instanceof FormData) && !(body instanceof Blob);
 }
 
@@ -75,7 +81,7 @@ export async function apiClient<T>(path: string, options: ApiClientOptions = {})
       throw new ApiError({
         status: response.status,
         message: getErrorMessage(data, response.statusText),
-        data,
+        data: data as ErrorResponse,
       });
     }
 

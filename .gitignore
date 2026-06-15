@@ -23,6 +23,9 @@
 # env files (can opt-in for committing if needed)
 .env*
 
+# generated from backend OpenAPI docs
+scripts/fetch-api-generator/openapi.json
+
 # vercel
 .vercel
 

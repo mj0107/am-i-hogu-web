@@ -13,7 +13,9 @@
     "prepare": "husky",
     "storybook": "storybook dev -c storybook/.storybook -p 6006",
     "build-storybook": "storybook build -c storybook/.storybook",
-    "sync:api": "node scripts/api-sync/index.mjs"
+    "controller": "node scripts/controller-generator/index.mjs",
+    "sync:api": "node scripts/fetch-api-generator/index.mjs",
+    "sync:api:local": "node scripts/fetch-api-generator/index.mjs --skip-fetch"
   },
   "lint-staged": {
     "*": [

@@ -63,7 +63,7 @@ export function Button(inputProps: ButtonProps) {
       {...props}
     >
       {leftIcon ? <span data-slot="button-left-icon">{leftIcon}</span> : null}
-      {children}
+      <Slot.Slottable>{children}</Slot.Slottable>
       {rightIcon ? <span data-slot="button-right-icon">{rightIcon}</span> : null}
     </Comp>
   );
