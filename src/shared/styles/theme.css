@@ -4,10 +4,29 @@
   --font-sans: var(--font-pretendard);
 
   /* common (앱뷰 적용) */
-  --width-common-width: 475px;
   --max-width-common-width: 475px;
+  --width-common-width: min(100vw, var(--max-width-common-width));
   --padding-common-padding: 20px;
   --radius-common-radius: 8px;
+  --width-modal-width: min(343px, calc(var(--width-common-width) - (var(--padding-common-padding) * 2)));
+  --width-toast-app-width: min(343px, calc(var(--width-common-width) - (var(--padding-common-padding) * 2)));
+  --width-toast-web-width: min(400px, calc(var(--width-common-width) - (var(--padding-common-padding) * 2)));
+  --spacing-app-floating-edge: max(1rem, calc((100vw - var(--max-width-common-width)) / 2 + 1rem));
+  --spacing-app-responsive-inline: clamp(12px, 4.2vw, 20px);
+  --spacing-app-responsive-control-gap: clamp(12px, 3.4vw, 16px);
+  --spacing-app-responsive-block-sm: clamp(8px, 2.5vw, 12px);
+  --spacing-app-bottom-nav-floating-offset: calc(
+    (var(--spacing-app-responsive-block-sm) * 4) +
+    var(--spacing-footer-tab-gap) +
+    3.46875rem
+  );
+  --spacing-app-bottom-nav-stacked-floating-offset: calc(var(--spacing-app-bottom-nav-floating-offset) + 4rem);
+  --spacing-app-footer-action-floating-offset: 6.25rem;
+  --spacing-app-footer-action-stacked-floating-offset: calc(var(--spacing-app-footer-action-floating-offset) + 4rem);
+  --spacing-content-card-inline: clamp(16px, 5vw, 24px);
+  --spacing-content-card-block: clamp(16px, 4.2vw, 20px);
+  --spacing-footer-tab-inline: clamp(6px, 2vw, 8px);
+  --spacing-footer-tab-gap: clamp(2px, 1vw, 4px);
 
   /* ===== Base Color Palettes (피그마 variables 적용) ===== */
 

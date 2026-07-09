@@ -108,12 +108,43 @@ async function getAccessToken() {
   }
 }
 
+/**
+ * 공개 API에 사용자 문맥이 필요한 경우 사용할 access token을 반환한다.
+ *
+ * @description
+ * - 게시글/댓글 조회처럼 비로그인 접근은 가능하지만, 로그인 상태라면 `isMine`, `isHelpful` 같은 사용자별 필드가 필요한 API에서 사용한다.
+ * - feature service에서 refresh token을 직접 다루지 않도록 optional auth 책임도 이 레이어에 모은다.
+ * - refresh token이 없거나 만료된 경우에는 public 요청으로 이어갈 수 있도록 null을 반환한다.
+ * - refresh 요청은 보호 API와 같은 단일 Promise를 공유해 새로고침 직후 병렬 조회에서 refresh가 중복 호출되지 않게 한다.
+ *
+ * @returns access token 또는 null
+ */
+export async function getOptionalAccessToken(options?: { forceRefresh?: boolean }) {
+  const forceRefresh = options?.forceRefresh ?? false;
+  const { accessToken, clearAccessToken, setAccessToken } = useAuthStore.getState();
+
+  if (accessToken && !forceRefresh) {
+    return accessToken;
+  }
+
+  try {
+    const reissueResponse = await refreshAccessTokenOnce();
+    setAccessToken(reissueResponse.accessToken);
+
+    return reissueResponse.accessToken;
+  } catch {
+    clearAccessToken();
+    return null;
+  }
+}
+
 export async function authenticatedApiClient<T>(path: string, options: ApiClientOptions = {}) {
   const accessToken = await getAccessToken();
 
   try {
     return await apiClient<T>(path, {
       ...options,
+      credentials: options.credentials ?? "include",
       headers: createAuthenticatedHeaders(options.headers, accessToken),
     });
   } catch (error) {
@@ -142,6 +173,7 @@ export async function authenticatedApiClient<T>(path: string, options: ApiClient
     // 갱신된 access token으로 원래 요청을 다시 보낸다.
     return await apiClient<T>(path, {
       ...options,
+      credentials: options.credentials ?? "include",
       headers: createAuthenticatedHeaders(options.headers, reissueResponse.accessToken),
     });
   }

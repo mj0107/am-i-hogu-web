@@ -58,13 +58,15 @@ export function usePostImageTileState({ imageUrl, onImageSelect, onRemove }: Use
 
     onImageSelect?.(file);
 
-    const nextPreviewUrl = URL.createObjectURL(file);
-    setPreviewUrl((prev) => {
-      if (prev) {
-        URL.revokeObjectURL(prev);
-      }
-      return nextPreviewUrl;
-    });
+    if (!onImageSelect) {
+      const nextPreviewUrl = URL.createObjectURL(file);
+      setPreviewUrl((prev) => {
+        if (prev) {
+          URL.revokeObjectURL(prev);
+        }
+        return nextPreviewUrl;
+      });
+    }
 
     event.target.value = "";
   };

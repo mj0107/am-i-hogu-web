@@ -7,8 +7,8 @@ import {
   BottomSheetBody,
   BottomSheetDescription,
   BottomSheetFooter,
+  BottomSheetHandle,
   BottomSheetHeader,
-  BottomSheetHomeIndicator,
   BottomSheetTitleRow,
   Checkbox,
 } from "@/shared/ui";
@@ -24,6 +24,7 @@ export type PostFilterBottomSheetProps = {
   description?: ReactNode;
   saveText?: ReactNode;
   className?: string;
+  open?: boolean;
 };
 
 export function PostFilterBottomSheet(props: PostFilterBottomSheetProps) {
@@ -36,11 +37,13 @@ export function PostFilterBottomSheet(props: PostFilterBottomSheetProps) {
     description = "게시글과 관련된 카테고리를 선택해주세요.",
     saveText = "저장하기",
     className,
+    open,
   } = props;
   const isSaveDisabled = selectedOptions.length === 0;
 
   return (
-    <BottomSheet className={className}>
+    <BottomSheet className={className} open={open} onOpenChange={(nextOpen) => !nextOpen && onClose?.()}>
+      <BottomSheetHandle />
       <BottomSheetHeader>
         <BottomSheetTitleRow title={title} onClose={onClose} />
         <BottomSheetDescription>{description}</BottomSheetDescription>
@@ -72,7 +75,6 @@ export function PostFilterBottomSheet(props: PostFilterBottomSheetProps) {
           {saveText}
         </BottomSheetActionButton>
       </BottomSheetFooter>
-      <BottomSheetHomeIndicator />
     </BottomSheet>
   );
 }

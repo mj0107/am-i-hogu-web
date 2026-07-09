@@ -27,6 +27,7 @@ export function useHorizontalDragScroll(options?: UseHorizontalDragScrollOptions
   const { preventDefaultOnPointerDown = true, ignorePointerDownSelector } = options ?? {};
   const isPointerDownRef = useRef(false);
   const hasDraggedRef = useRef(false);
+  const hasPointerCaptureRef = useRef(false);
   const activePointerIdRef = useRef<number | null>(null);
   const startXRef = useRef(0);
   const startScrollLeftRef = useRef(0);
@@ -54,11 +55,11 @@ export function useHorizontalDragScroll(options?: UseHorizontalDragScrollOptions
       if (preventDefaultOnPointerDown) {
         event.preventDefault();
       }
-      element.setPointerCapture(event.pointerId);
 
       // 드래그 시작 시점의 pointer/좌표/스크롤 위치를 저장
       isPointerDownRef.current = true;
       hasDraggedRef.current = false;
+      hasPointerCaptureRef.current = false;
       activePointerIdRef.current = event.pointerId;
       startXRef.current = event.clientX;
       startScrollLeftRef.current = element.scrollLeft;
@@ -88,6 +89,11 @@ export function useHorizontalDragScroll(options?: UseHorizontalDragScrollOptions
         return;
       }
 
+      if (!hasPointerCaptureRef.current) {
+        element.setPointerCapture(event.pointerId);
+        hasPointerCaptureRef.current = true;
+      }
+
       event.preventDefault();
       element.scrollLeft = startScrollLeftRef.current - deltaX;
       onAfterScroll?.();
@@ -96,12 +102,13 @@ export function useHorizontalDragScroll(options?: UseHorizontalDragScrollOptions
   );
 
   const handlePointerUp = useCallback((event?: PointerEvent<HTMLElement>, element?: HTMLElement | null) => {
-    if (event && element?.hasPointerCapture(event.pointerId)) {
+    if (event && hasPointerCaptureRef.current && element?.hasPointerCapture(event.pointerId)) {
       element.releasePointerCapture(event.pointerId);
     }
 
     // 드래그 종료 시 추적 상태 초기화
     isPointerDownRef.current = false;
+    hasPointerCaptureRef.current = false;
     activePointerIdRef.current = null;
   }, []);
 

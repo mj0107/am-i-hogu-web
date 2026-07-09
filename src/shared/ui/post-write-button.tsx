@@ -68,7 +68,7 @@ export function PostWriteButton(props: PostWriteButtonProps) {
       <div
         className={cn(
           "z-50 h-fit w-fit",
-          !useFlexLayout && "fixed bottom-12 right-[max(1rem,calc((100vw-475px)/2+1rem))]",
+          !useFlexLayout && "fixed bottom-12 right-[var(--spacing-app-floating-edge)]",
           useFlexLayout && "relative",
           className,
         )}

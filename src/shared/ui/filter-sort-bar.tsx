@@ -124,7 +124,7 @@ export function FilterSortBar(props: FilterSortBarProps) {
           onPointerCancel={onCategoryPointerEnd}
           onPointerLeave={onCategoryPointerEnd}
           className={cn("flex gap-2 overflow-x-auto", showCategoryFade ? "pr-10" : "")}
-          style={{ touchAction: "pan-x" }}
+          style={{ WebkitOverflowScrolling: "touch", touchAction: "pan-x" }}
         >
           <li>
             <Chip
@@ -177,7 +177,7 @@ export function FilterSortBar(props: FilterSortBarProps) {
           onPointerCancel={onSelectedPointerEnd}
           onPointerLeave={onSelectedPointerEnd}
           className="flex items-center gap-2 overflow-x-auto"
-          style={{ touchAction: "pan-x" }}
+          style={{ WebkitOverflowScrolling: "touch", touchAction: "pan-x" }}
         >
           {visibleSelectedOptions.map((option) => (
             <li key={option}>

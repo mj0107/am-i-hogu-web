@@ -1,8 +1,8 @@
 "use client";
 
 import { type ComponentProps, type PointerEvent, useEffect, useRef } from "react";
+import { useFileDropZone } from "@/shared/hooks/use-file-drop-zone";
 import { useHorizontalDragScroll } from "@/shared/hooks/use-horizontal-drag-scroll";
-import { usePostImageCarouselOrder } from "@/shared/hooks/use-post-image-carousel-order";
 import { PostImageTile, type PostImageTileProps } from "@/shared/ui/post-image-tile";
 import { cn } from "@/shared/utils";
 
@@ -16,6 +16,7 @@ export type PostImageCarouselProps = {
   title?: string;
   description?: string;
   items: PostImageCarouselItem[];
+  onFilesDrop?: (files: File[]) => void;
   titleClassName?: string;
   descriptionClassName?: string;
   viewportClassName?: string;
@@ -26,6 +27,7 @@ export function PostImageCarousel(props: PostImageCarouselProps) {
     title = "게시물 이미지",
     description = "추천 비율 - 0:0 / 최대 5장, 5MB이하",
     items,
+    onFilesDrop,
     className,
     titleClassName,
     descriptionClassName,
@@ -36,8 +38,11 @@ export function PostImageCarousel(props: PostImageCarouselProps) {
   const dragScroll = useHorizontalDragScroll({
     preventDefaultOnPointerDown: false,
   });
-  const { orderedItems, moveToRepresentative, remove } = usePostImageCarouselOrder(items);
-  const thumbnailItemId = orderedItems.find((item) => item.isThumbnail)?.id;
+  const { isDraggingFile, dropZoneProps } = useFileDropZone({
+    disabled: !onFilesDrop,
+    onFilesDrop: (files) => onFilesDrop?.(files),
+  });
+  const thumbnailItemId = items.find((item) => item.isThumbnail)?.id;
 
   useEffect(() => {
     if (!thumbnailItemId) {
@@ -56,7 +61,15 @@ export function PostImageCarousel(props: PostImageCarouselProps) {
   };
 
   return (
-    <section className={cn("flex w-full flex-col items-start gap-2", className)} {...restProps}>
+    <section
+      className={cn(
+        "flex w-full flex-col items-start gap-2 rounded-[12px] transition-colors",
+        isDraggingFile && "bg-bg-02 ring-1 ring-primary-default",
+        className,
+      )}
+      {...dropZoneProps}
+      {...restProps}
+    >
       <header className="flex w-full flex-col items-start gap-0.5">
         <h3 className={cn("text-body-m text-text-04", titleClassName)}>{title}</h3>
         <p className={cn("text-caption-m text-text-03", descriptionClassName)}>{description}</p>
@@ -78,19 +91,13 @@ export function PostImageCarousel(props: PostImageCarouselProps) {
         style={{ touchAction: "pan-x" }}
       >
         <div className="flex min-w-max items-center gap-4">
-          {orderedItems.map(({ id, isThumbnail, onPromoteToRepresentative, onRemove, ...item }) => (
+          {items.map(({ id, isThumbnail, onPromoteToRepresentative, onRemove, ...item }) => (
             <PostImageTile
               key={id}
               {...item}
               isRepresentative={isThumbnail}
-              onPromoteToRepresentative={() => {
-                onPromoteToRepresentative?.();
-                moveToRepresentative(id);
-              }}
-              onRemove={() => {
-                onRemove?.();
-                remove(id);
-              }}
+              onPromoteToRepresentative={onPromoteToRepresentative}
+              onRemove={onRemove}
             />
           ))}
         </div>

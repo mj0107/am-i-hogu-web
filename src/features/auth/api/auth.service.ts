@@ -8,3 +8,11 @@ export async function refreshAccessToken() {
     credentials: "include",
   });
 }
+
+export async function logout() {
+  return apiClient<void>("/api/auth/logout", {
+    method: "POST",
+    cache: "no-store",
+    credentials: "include",
+  });
+}

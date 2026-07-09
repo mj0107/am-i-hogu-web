@@ -2,7 +2,7 @@ export type HoguLevel = "SAFE" | "CAUTIOUS" | "WARNING" | "RISKY" | "CRITICAL" |
 
 export type MypageUserResponse = {
   nickname: string;
-  profileImageUrl: string;
+  profileImageUrl: string | null;
   hoguIndex: number;
   hoguLevel: HoguLevel;
   hoguShortDescription: string;

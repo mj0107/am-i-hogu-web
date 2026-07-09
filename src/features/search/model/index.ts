@@ -1,2 +1,2 @@
-export * from "./search.mock";
 export * from "./search.types";
+export * from "./search.utils";

@@ -32,3 +32,29 @@ export const POST_SORT_OPTIONS = [
   { value: "comments", label: "댓글순" },
   { value: "votes", label: "투표 참여순" },
 ] as const;
+
+export const POST_LIST_PAGE_SIZE = 10;
+
+export type PostSortValue = (typeof POST_SORT_OPTIONS)[number]["value"];
+export type PostSortQueryValue = "LATEST" | "MOST_VIEWED" | "MOST_COMMENTED" | "MOST_PARTICIPATED";
+
+export const POST_SORT_QUERY_BY_VALUE = {
+  latest: "LATEST",
+  views: "MOST_VIEWED",
+  comments: "MOST_COMMENTED",
+  votes: "MOST_PARTICIPATED",
+} satisfies Record<PostSortValue, PostSortQueryValue>;
+
+export type PostCommentSortValue = "latest" | "helpful";
+
+export const COMMENT_PAGE_SIZE = 15;
+
+export const COMMENT_SORT_OPTIONS = [
+  { value: "latest", label: "최신순" },
+  { value: "helpful", label: "유익해요순" },
+] as const satisfies readonly { value: PostCommentSortValue; label: string }[];
+
+export const COMMENT_SORT_QUERY_BY_VALUE = {
+  latest: "LATEST",
+  helpful: "HELPFUL",
+} satisfies Record<PostCommentSortValue, "LATEST" | "HELPFUL">;

@@ -24,11 +24,20 @@ export function RecentSearchSection(props: RecentSearchSectionProps) {
       {recentSearches.length > 0 ? (
         <ul>
           {recentSearches.map((term) => (
-            <li key={term} className="flex items-center justify-between px-common-padding py-4">
-              <button type="button" className="text-body-m text-text-03" onClick={() => onSelectTerm(term)}>
+            <li key={term} className="flex items-center gap-3 px-common-padding py-4">
+              <button
+                type="button"
+                className="min-w-0 flex-1 truncate text-left text-body-m text-text-03"
+                onClick={() => onSelectTerm(term)}
+              >
                 {term}
               </button>
-              <button type="button" aria-label={`${term} 검색어 삭제`} onClick={() => onRemoveTerm(term)}>
+              <button
+                type="button"
+                className="shrink-0"
+                aria-label={`${term} 검색어 삭제`}
+                onClick={() => onRemoveTerm(term)}
+              >
                 <XIcon aria-hidden className="size-4 text-text-03" strokeWidth={20} />
               </button>
             </li>

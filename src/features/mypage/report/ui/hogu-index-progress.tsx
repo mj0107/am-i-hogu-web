@@ -32,7 +32,10 @@ export function HoguIndexProgress({
   }, [value]);
 
   return (
-    <div className={cn("relative flex items-center justify-center", className)} style={{ width: size, height: size }}>
+    <div
+      className={cn("relative flex aspect-square max-w-full items-center justify-center", className)}
+      style={{ width: `min(${size}px, 100%)` }}
+    >
       <svg
         className={cn("absolute inset-0 size-full -rotate-90 text-secondary-default", progressClassName)}
         viewBox={`0 0 ${size} ${size}`}

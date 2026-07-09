@@ -12,6 +12,7 @@ type UserDeleteModalProps = {
   open: boolean;
   onClose: () => void;
   onConfirmDelete: (payload: UserDeleteSubmitPayload) => boolean | Promise<boolean | undefined> | undefined;
+  onCompleteClose?: () => void;
   initialStep?: UserDeleteFlowStep;
   initialReason?: UserDeleteReason | null;
   initialReasonDetail?: string;
@@ -25,6 +26,7 @@ export function UserDeleteModal(props: UserDeleteModalProps) {
     open,
     onClose,
     onConfirmDelete,
+    onCompleteClose = onClose,
     initialStep = "confirm",
     initialReason = null,
     initialReasonDetail = "",
@@ -93,7 +95,7 @@ export function UserDeleteModal(props: UserDeleteModalProps) {
         className={className}
       />
 
-      <UserDeleteCompleteModal open={step === "complete"} onGoHome={onClose} className={className} />
+      <UserDeleteCompleteModal open={step === "complete"} onGoHome={onCompleteClose} className={className} />
 
       <UserDeleteFailedModal open={step === "failed"} onClose={onClose} onRetry={handleRetry} className={className} />
     </>

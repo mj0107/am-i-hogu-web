@@ -6,10 +6,10 @@ import MagnifyingGlassIcon from "@/assets/icons/magnifying-glass.svg";
 import UserIcon from "@/assets/icons/user.svg";
 import { cn } from "@/shared/utils";
 
-type FooterTab = "home" | "search" | "mypage";
+export type FooterTabId = "home" | "search" | "mypage";
 
 type FooterTabItem = {
-  key: FooterTab;
+  key: FooterTabId;
   label: string;
   href: string;
   icon: ComponentType<SVGProps<SVGSVGElement>>;
@@ -22,7 +22,7 @@ const footerTabs: FooterTabItem[] = [
 ];
 
 export type FooterWidgetProps = {
-  activeTab?: FooterTab;
+  activeTab?: FooterTabId;
 };
 
 function getFooterTabButtonToneClass(isActive: boolean) {
@@ -31,7 +31,7 @@ function getFooterTabButtonToneClass(isActive: boolean) {
     : "bg-transparent text-primary-light hover:bg-primary-light/20 hover:text-primary-default";
 }
 
-function getFooterTabIconProps(key: FooterTab, isActive: boolean) {
+function getFooterTabIconProps(key: FooterTabId, isActive: boolean) {
   return {
     ...(key === "search" || (key === "home" && !isActive) ? { strokeWidth: 25 } : {}),
     ...(key === "search" ? { fill: isActive ? "currentColor" : "none" } : {}),
@@ -39,7 +39,7 @@ function getFooterTabIconProps(key: FooterTab, isActive: boolean) {
 }
 
 type FooterTabButtonProps = {
-  tabKey: FooterTab;
+  tabKey: FooterTabId;
   label: string;
   href: string;
   isActive: boolean;
@@ -55,7 +55,7 @@ function FooterTabButton(props: FooterTabButtonProps) {
       href={href}
       aria-current={isActive ? "page" : undefined}
       className={cn(
-        "flex h-auto w-[68px] flex-col items-center justify-center gap-1 rounded-[16px] px-3 py-3",
+        "flex h-auto w-[68px] max-w-full flex-col items-center justify-center gap-[var(--spacing-footer-tab-gap)] rounded-[16px] px-[var(--spacing-footer-tab-inline)] py-[var(--spacing-app-responsive-block-sm)]",
         getFooterTabButtonToneClass(isActive),
       )}
     >
@@ -67,18 +67,21 @@ function FooterTabButton(props: FooterTabButtonProps) {
 
 export function FooterWidget({ activeTab = "home" }: FooterWidgetProps) {
   return (
-    <footer className="rounded-t-[24px] bg-bg-01 px-10 py-3">
-      <ul className="flex items-center justify-between">
+    <nav
+      aria-label="주요 메뉴"
+      className="rounded-t-[24px] bg-bg-01 px-[var(--spacing-app-responsive-inline)] py-[var(--spacing-app-responsive-block-sm)]"
+    >
+      <ul className="flex w-full items-center justify-around">
         {footerTabs.map(({ key, label, href, icon: Icon }) => {
           const isActive = key === activeTab;
 
           return (
-            <li key={key}>
+            <li key={key} className="flex min-w-0 flex-1 justify-center">
               <FooterTabButton tabKey={key} label={label} href={href} isActive={isActive} Icon={Icon} />
             </li>
           );
         })}
       </ul>
-    </footer>
+    </nav>
   );
 }

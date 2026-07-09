@@ -69,7 +69,7 @@ export function ContentCardCarousel(props: ContentCardCarouselProps) {
   };
 
   return (
-    <div className="relative">
+    <div className="relative min-w-0">
       <ul
         ref={listRef}
         onScroll={onScroll}
@@ -79,16 +79,18 @@ export function ContentCardCarousel(props: ContentCardCarouselProps) {
         onPointerCancel={onPointerEnd}
         onPointerLeave={onPointerEnd}
         className={cn(
-          "no-scrollbar flex overflow-x-auto",
+          "no-scrollbar flex min-w-0 overflow-x-auto",
           isDragging ? "snap-none" : "snap-x snap-mandatory",
           "cursor-grab select-none active:cursor-grabbing",
-          "[&>li]:w-full [&>li]:snap-start [&>li]:shrink-0",
+          "[&>li]:min-w-0 [&>li]:w-full [&>li]:snap-start [&>li]:shrink-0",
           itemClassName,
           className,
         )}
       >
         {items.map((item) => (
-          <li key={item.id}>{item.content}</li>
+          <li key={item.id} className="min-w-0">
+            {item.content}
+          </li>
         ))}
       </ul>
       {showPagination && itemCount > 1 ? (

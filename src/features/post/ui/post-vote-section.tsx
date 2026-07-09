@@ -27,20 +27,40 @@ export type PostVoteSectionProps = ComponentProps<"section"> & {
   options: PostVoteOption[];
   totalVotes: number;
   initialSelectedId?: VoteId;
+  isDisabled?: boolean;
+  isVoting?: boolean;
+  selectedId?: VoteId | null;
+  onVoteSelect?: (id: VoteId) => void;
 };
 
 export function PostVoteSection(props: PostVoteSectionProps) {
-  const { options, totalVotes, initialSelectedId, className, ...rest } = props;
-  const [selectedId, setSelectedId] = useState<VoteId | null>(initialSelectedId ?? null);
+  const {
+    options,
+    totalVotes,
+    initialSelectedId,
+    isDisabled = false,
+    isVoting = false,
+    selectedId,
+    onVoteSelect,
+    className,
+    ...rest
+  } = props;
+  const [internalSelectedId, setInternalSelectedId] = useState<VoteId | null>(initialSelectedId ?? null);
+  const currentSelectedId = selectedId !== undefined ? selectedId : internalSelectedId;
 
   const handleSelect = (id: VoteId) => {
-    setSelectedId((prev) => (prev === id ? null : id));
+    if (onVoteSelect) {
+      onVoteSelect(id);
+      return;
+    }
+
+    setInternalSelectedId((prev) => (prev === id ? null : id));
   };
 
   const renderVoteRow = (option: PostVoteOption) => {
     const tone = option.id === "HOGU" ? "yellow" : "indigo";
-    const isSelected = selectedId === option.id;
-    const hasSelection = selectedId !== null;
+    const isSelected = currentSelectedId === option.id;
+    const hasSelection = currentSelectedId !== null;
     const percentage = Math.max(0, Math.min(100, option.percent));
     const isOpposite = hasSelection && !isSelected;
 
@@ -64,18 +84,22 @@ export function PostVoteSection(props: PostVoteSectionProps) {
           type="button"
           onClick={() => handleSelect(option.id)}
           aria-pressed={isSelected}
-          className={cn("relative w-full overflow-hidden rounded-full px-4 py-4 text-left", surfaceClassName)}
+          disabled={isDisabled || isVoting}
+          className={cn(
+            "relative min-w-0 w-full overflow-hidden rounded-full px-[clamp(12px,4vw,16px)] py-4 text-left",
+            surfaceClassName,
+          )}
         >
           <div
             className={cn("absolute inset-y-0 left-0", overlayClassName)}
             style={{ width: `${percentage}%` }}
             aria-hidden
           />
-          <div className="relative z-10 flex items-center justify-between text-body-r">
-            <span className={cn(isSelected ? "text-body-sb" : "text-body-m")}>
+          <div className="relative z-10 flex min-w-0 flex-wrap items-center justify-between gap-x-2 gap-y-1 text-body-r">
+            <span className={cn("min-w-0 break-words", isSelected ? "text-body-sb" : "text-body-m")}>
               {option.label} {option.emoji}
             </span>
-            <strong className="text-body-sb">{percentage}%</strong>
+            <strong className="shrink-0 text-body-sb">{percentage}%</strong>
           </div>
         </button>
       </li>
@@ -83,10 +107,14 @@ export function PostVoteSection(props: PostVoteSectionProps) {
   };
 
   return (
-    <section className={cn("rounded-lg bg-bg-02 px-6 pb-6 pt-10", className)} aria-label="판결" {...rest}>
-      <h2 className="text-center text-title2-b text-text-03">판결을 내려주세요</h2>
+    <section
+      className={cn("min-w-0 rounded-lg bg-bg-02 px-[clamp(12px,6vw,24px)] pb-6 pt-10", className)}
+      aria-label="판결"
+      {...rest}
+    >
+      <h2 className="break-words text-center text-title2-b text-text-03">판결을 내려주세요</h2>
       <ul className="mt-6 flex flex-col gap-3">{options.map(renderVoteRow)}</ul>
-      <p className="mt-6 text-center text-small-m text-text-03">
+      <p className="mt-6 break-words text-center text-small-m text-text-03">
         {totalVotes > 0
           ? `현재까지 ${formatNumber(totalVotes)}명이 판결에 참여했습니다.`
           : "참여한 인원이 없습니다. 판결에 참여해 주세요!"}

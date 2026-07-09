@@ -1,1 +1,12 @@
-/* 추후 추가 예정 */
+@utility screen-height {
+  @apply h-screen;
+  @apply h-dvh;
+}
+
+@utility flex-center {
+  @apply flex items-center justify-center;
+}
+
+@utility fixed-center {
+  @apply fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2;
+}

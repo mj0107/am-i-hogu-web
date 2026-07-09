@@ -18,10 +18,10 @@ export function Avatar(props: AvatarProps) {
   return (
     <div
       className={cn(
-        "flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-indigo-100 text-primary-default",
+        "flex aspect-square max-w-full shrink-0 items-center justify-center overflow-hidden rounded-full bg-indigo-100 text-primary-default",
         className,
       )}
-      style={{ width: size, height: size, ...style }}
+      style={{ width: `min(${size}px, 100%)`, ...style }}
       {...rest}
     >
       {src ? (

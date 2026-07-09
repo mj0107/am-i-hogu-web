@@ -11,10 +11,16 @@ import {
 type MypageLogoutConfirmModalProps = {
   open: boolean;
   onClose: () => void;
-  onConfirmLogout: () => void;
+  onConfirmLogout: () => void | Promise<void>;
+  isPending?: boolean;
 };
 
-export function MypageLogoutConfirmModal({ open, onClose, onConfirmLogout }: MypageLogoutConfirmModalProps) {
+export function MypageLogoutConfirmModal({
+  open,
+  onClose,
+  onConfirmLogout,
+  isPending = false,
+}: MypageLogoutConfirmModalProps) {
   if (!open) {
     return null;
   }
@@ -30,11 +36,15 @@ export function MypageLogoutConfirmModal({ open, onClose, onConfirmLogout }: Myp
           <ModalActions
             layout="double"
             secondary={
-              <ModalActionButton variant="inactive" onClick={onClose}>
+              <ModalActionButton variant="inactive" onClick={onClose} disabled={isPending}>
                 취소하기
               </ModalActionButton>
             }
-            primary={<ModalActionButton onClick={onConfirmLogout}>로그아웃</ModalActionButton>}
+            primary={
+              <ModalActionButton onClick={onConfirmLogout} disabled={isPending}>
+                로그아웃
+              </ModalActionButton>
+            }
           />
         </ModalFooter>
       </Modal>

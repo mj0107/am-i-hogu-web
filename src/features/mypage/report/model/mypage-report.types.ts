@@ -18,6 +18,7 @@ export type HoguIndex = {
   label: string;
   summary: string;
   description?: string;
+  isPendingAggregation?: boolean;
 };
 
 export type HoguCategoryBreakdown = {
@@ -49,5 +50,6 @@ export type HoguIndexProgressProps = {
 
 export type MypageReportSectionProps = {
   categories: HoguCategoryBreakdown[];
+  isPendingAggregation?: boolean;
   stats: MypageStats;
 };

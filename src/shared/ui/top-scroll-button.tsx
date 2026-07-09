@@ -119,7 +119,7 @@ export function TopScrollButton(props: TopScrollButtonProps) {
     <div
       className={cn(
         "z-40 h-fit w-fit",
-        !useFlexLayout && "fixed right-[max(1rem,calc((100vw-475px)/2+1rem))]",
+        !useFlexLayout && "fixed right-[var(--spacing-app-floating-edge)]",
         !useFlexLayout && mode === "single" && "bottom-12",
         !useFlexLayout && mode === "withPostWrite" && "bottom-[11.25rem]",
         useFlexLayout && "relative",

@@ -1,4 +1,5 @@
 export * from "./action-buttons";
+export * from "./app-surface";
 export * from "./avatar";
 export * from "./badge";
 export * from "./bottom-sheet";

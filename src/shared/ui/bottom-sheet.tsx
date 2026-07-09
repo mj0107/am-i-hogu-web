@@ -1,10 +1,15 @@
+"use client";
+
 import type { ComponentProps, ReactNode } from "react";
+import { Drawer as DrawerPrimitive } from "vaul";
 import XIcon from "@/assets/icons/x.svg";
 import { cn } from "@/shared/utils";
 
 export type BottomSheetProps = {
   className?: string;
   children: ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 };
 
 export type BottomSheetTitleRowProps = {
@@ -14,11 +19,32 @@ export type BottomSheetTitleRowProps = {
   closeLabel?: string;
 };
 
-export function BottomSheet({ className, children }: BottomSheetProps) {
+export function BottomSheet(props: BottomSheetProps) {
+  const { className, children, open = false, onOpenChange } = props;
   return (
-    <section data-slot="bottom-sheet" className={cn("flex w-full flex-col rounded-t-lg bg-bg-01", className)}>
-      {children}
-    </section>
+    <DrawerPrimitive.Root direction="bottom" open={open} onOpenChange={onOpenChange}>
+      <DrawerPrimitive.Portal>
+        <DrawerPrimitive.Overlay className="fixed inset-0 z-50 bg-[rgba(0,0,0,0.4)] duration-200 data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:animate-in data-[state=open]:fade-in" />
+        <DrawerPrimitive.Content
+          data-slot="bottom-sheet"
+          className={cn(
+            "fixed inset-x-0 bottom-0 z-50 mx-auto flex w-full max-w-common-width flex-col rounded-t-[16px] bg-bg-01 outline-none duration-200 data-[state=closed]:animate-out data-[state=closed]:slide-out-to-bottom data-[state=open]:animate-in data-[state=open]:slide-in-from-bottom",
+            className,
+          )}
+        >
+          {children}
+        </DrawerPrimitive.Content>
+      </DrawerPrimitive.Portal>
+    </DrawerPrimitive.Root>
+  );
+}
+
+export function BottomSheetHandle({ className }: { className?: string }) {
+  return (
+    <DrawerPrimitive.Handle
+      data-slot="bottom-sheet-handle"
+      className={cn("mx-auto my-2 h-[5px] w-[134px] rounded-full bg-text-04", className)}
+    />
   );
 }
 
@@ -31,7 +57,9 @@ export function BottomSheetHeader({ className, ...props }: ComponentProps<"heade
 export function BottomSheetTitleRow({ className, title, onClose, closeLabel = "닫기" }: BottomSheetTitleRowProps) {
   return (
     <div className={cn("flex w-full items-center justify-between gap-2", className)}>
-      <h2 className="text-title2-m text-text-04">{title}</h2>
+      <DrawerPrimitive.Title asChild>
+        <h2 className="text-title2-m text-text-04">{title}</h2>
+      </DrawerPrimitive.Title>
       <button
         type="button"
         aria-label={closeLabel}
@@ -45,7 +73,11 @@ export function BottomSheetTitleRow({ className, title, onClose, closeLabel = "�
 }
 
 export function BottomSheetDescription({ className, ...props }: ComponentProps<"p">) {
-  return <p data-slot="bottom-sheet-description" className={cn("text-body-r text-text-03", className)} {...props} />;
+  return (
+    <DrawerPrimitive.Description asChild>
+      <p data-slot="bottom-sheet-description" className={cn("text-body-r text-text-03", className)} {...props} />
+    </DrawerPrimitive.Description>
+  );
 }
 
 export function BottomSheetBody({ className, ...props }: ComponentProps<"div">) {
@@ -54,15 +86,4 @@ export function BottomSheetBody({ className, ...props }: ComponentProps<"div">) 
 
 export function BottomSheetFooter({ className, ...props }: ComponentProps<"footer">) {
   return <footer data-slot="bottom-sheet-footer" className={cn("w-full px-4 pb-4", className)} {...props} />;
-}
-
-export function BottomSheetHomeIndicator({ className }: { className?: string }) {
-  return (
-    <div
-      data-slot="bottom-sheet-home-indicator"
-      className={cn("flex h-7 w-full items-center justify-center", className)}
-    >
-      <div className="h-[5px] w-[134px] rounded-full bg-text-04" />
-    </div>
-  );
 }

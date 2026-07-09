@@ -74,6 +74,24 @@
   opacity: 0;
 }
 
+[data-slot="post-comment-body"] {
+  font-size: var(--text-caption-m);
+  line-height: var(--text-caption-m--line-height);
+  letter-spacing: var(--text-caption-m--letter-spacing);
+  font-weight: var(--text-caption-m--font-weight);
+}
+
+[data-slot="comment-textfield-input"] {
+  font-size: var(--text-caption-m);
+  line-height: var(--text-caption-m--line-height);
+  letter-spacing: var(--text-caption-m--letter-spacing);
+  font-weight: var(--text-caption-m--font-weight);
+}
+
+#app-layout:has([data-app-shell-bottom-nav="hidden"]) [data-slot="app-shell-bottom-nav"] {
+  display: none;
+}
+
 /* ===== Loading Animation ===== */
 /* 저울대(beam) + 양쪽 접시(pans)만 회전, 기둥(post)·받침(base)은 고정. */
 

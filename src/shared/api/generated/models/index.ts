@@ -33,6 +33,7 @@ export type * from "./post-create-request";
 export type * from "./post-create-response";
 export type * from "./post-detail-response";
 export type * from "./post-image-request";
+export type * from "./post-image-response";
 export type * from "./post-update-request";
 export type * from "./post-update-response";
 export type * from "./post-vote-request";

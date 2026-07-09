@@ -8,13 +8,19 @@ import type {
 } from "@/features/mypage/report/model/mypage-report.types";
 import { toPostCategoryLabel } from "@/features/post/constants";
 
+const PENDING_HOGU_INDEX_SCORE = 0;
+
 export function toHoguIndex(
   response: Pick<MypageUserResponse, "hoguIndex" | "hoguLevel" | "hoguShortDescription">,
 ): HoguIndex {
+  // 백엔드 정책상 투표가 포함된 게시물이 5개 미만이면 hoguLevel이 NONE이며, 점수는 노출하지 않는다.
+  const isPendingAggregation = response.hoguLevel === "NONE";
+
   return {
-    score: response.hoguIndex,
+    score: isPendingAggregation ? PENDING_HOGU_INDEX_SCORE : response.hoguIndex,
     label: HOGU_LEVEL_LABEL[response.hoguLevel],
     summary: response.hoguShortDescription,
+    isPendingAggregation,
   };
 }
 

@@ -26,7 +26,10 @@ export function EditableAvatar(props: EditableAvatarProps) {
   } = props;
 
   return (
-    <div className={cn("relative", className)} style={{ width: size, minHeight: size + actionOffset }}>
+    <div
+      className={cn("relative max-w-full", className)}
+      style={{ width: `min(${size}px, 100%)`, minHeight: size + actionOffset }}
+    >
       <Avatar {...avatarProps} size={size} className={avatarClassName} />
       <button
         type="button"

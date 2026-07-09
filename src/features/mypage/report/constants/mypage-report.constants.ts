@@ -8,3 +8,5 @@ export const HOGU_LEVEL_LABEL: Record<HoguLevel, string> = {
   CRITICAL: "위험형",
   NONE: "집계 대기",
 };
+
+export const CATEGORY_ANALYSIS_UNLOCK_POST_COUNT = 5;

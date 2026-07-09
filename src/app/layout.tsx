@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { GlobalFloatingControls } from "@/features/home/ui";
 import { QueryProvider } from "@/shared/providers/query-provider";
+import { ToastProvider } from "@/shared/providers/toast-provider";
+import { AppShell } from "@/widgets/app-shell/ui";
 import "./globals.css";
 
 // 폰트 설정
@@ -25,15 +26,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" className={`${pretendard.variable} h-full antialiased`}>
-      <body className={`${pretendard.className} min-h-full flex`}>
+    <html lang="ko" className={`${pretendard.variable} h-full overflow-x-hidden antialiased`}>
+      <body className={`${pretendard.className} flex min-h-full min-w-0 overflow-x-hidden`}>
         <QueryProvider>
-          <div className="flex w-full grow flex-row justify-center">
-            <div id="app-layout" className="max-w-common-width flex w-full flex-col shadow-2xl">
-              {children}
-              <GlobalFloatingControls />
+          <div className="flex min-w-0 w-full grow flex-row justify-center">
+            <div id="app-layout" className="max-w-common-width flex min-w-0 w-full flex-col shadow-2xl">
+              <AppShell>{children}</AppShell>
             </div>
           </div>
+          <ToastProvider />
         </QueryProvider>
       </body>
     </html>
